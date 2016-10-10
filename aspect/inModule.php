@@ -1,5 +1,5 @@
 <?php
-    namespace modules\maxannotations\aspect;
+    namespace modules\hodannotations\aspect;
     use core\Loader;
     use modules\hodaspect\lib\hodaspect\BaseAspect;
 
