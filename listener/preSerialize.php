@@ -39,6 +39,10 @@ class PreSerialize extends  BaseListener{
                         if ($annotation->function == "dynamic") {
                             $newData[$key] = $this->dynamicGet($data, $key);
                         }
+                        if($annotation->function=="enumName"){
+                            $newData[$key] =  $newData[$key] = $data["original"]->{$key}->name;
+
+                        }
                     }
                 }
             }
