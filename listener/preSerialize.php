@@ -25,7 +25,8 @@ class PreSerialize extends  BaseListener{
         if($data["type"]!="array" && $data["type"]!="value") {
             if(!is_array($data["type"])) {
                 $vars = get_class_vars($data["type"]);
-                foreach ($vars as $key => $value) {
+
+                foreach ($data["data"] as $key => $value) {
                     $annotations = $this->annotation->getAnnotationsForField($data["type"], $key, "serialize");
                     foreach ($annotations as $annotation) {
                         $annotation = $this->annotation->translate($annotation);
@@ -41,8 +42,10 @@ class PreSerialize extends  BaseListener{
                         }
                         if($annotation->function=="enumName"){
                             $newData[$key] =  $newData[$key] = $data["original"]->{$key}->name;
-
                         }
+                       if($annotation->function=="modelOnly" && !property_exists(get_class($data["original"]),$key)){
+                          unset($newData[$key]);
+                       }
                     }
                 }
             }
@@ -59,7 +62,7 @@ class PreSerialize extends  BaseListener{
                 if(is_object($_value)){
                     $_data=array(
                         "data"=>$_value->toArray(),
-                        "type"=>$_value->getType(),
+                        "type"=>$_value->_getType(),
                         "original"=>$_value
                     );
                     $_dataNew=$this->handle($_data);
@@ -69,7 +72,7 @@ class PreSerialize extends  BaseListener{
         }elseif(is_object($tempData)){
             $_data=array(
                 "data"=>$tempData->toArray(),
-                "type"=>$tempData->getType(),
+                "type"=>$tempData->_getType(),
                 "original"=>$tempData
             );
             $_dataNew=$this->handle($_data);
